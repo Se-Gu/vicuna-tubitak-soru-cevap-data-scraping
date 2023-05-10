@@ -39,9 +39,16 @@ def extract_conversation(url, conversation_id):
 
     return conversation
 
+while True:
+    try:
+        number_of_pages = int(input("Kaç sayfalık soru-cevap çekmek istersiniz: "))
+        if number_of_pages <= 0 or number_of_pages > 24:
+            raise ValueError
+        break
+    except ValueError:
+        print("Lütfen geçerli bir sayı girin (0 < sayfa sayısı < 25)")
 
-num_of_pages = input("Kaç sayfalık soru-cevap çekmek istersiniz: ")
-url = f'https://bilimgenc.tubitak.gov.tr/koselerimiz/soru-cevap?page={num_of_pages})'
+url = f'https://bilimgenc.tubitak.gov.tr/koselerimiz/soru-cevap?page={number_of_pages})'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                   '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
@@ -66,7 +73,11 @@ for div in divs:
         conversation = extract_conversation(url, conversation_id)
         outputs.append(conversation)
 
+# Use dumps() method to serialize JSON object to a string
+json_str = json.dumps(outputs, ensure_ascii=False, indent=4)
 
+# Print the formatted JSON string
+print(json_str)
 # Write the output conversations to a JSON file
 with open('output.json', 'w', encoding='utf-8') as f:
     json.dump(outputs, f, ensure_ascii=False, indent=4)
